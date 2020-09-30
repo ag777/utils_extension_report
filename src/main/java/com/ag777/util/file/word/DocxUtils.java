@@ -36,7 +36,7 @@ import java.util.regex.Pattern;
  * @author ag777
  * @version create on 2020年09月30日,last modify at 2020年09月30日
  */
-public class WordUtils {
+public class DocxUtils {
 
 //    public static final String FONT_FAMILY_DEFAULT = "微 软 雅 黑";
 
@@ -146,7 +146,7 @@ public class WordUtils {
             long pageWidth, long pageHeight,
             long marginTop, long marginLeft, long marginBottom, long marginRight) {
         XWPFDocument doc = new XWPFDocument();
-        CTSectPr section = WordUtils.getPr(doc);
+        CTSectPr section = DocxUtils.getPr(doc);
         if(!section.isSetPgSz()) {
             section.addNewPgSz();
         }
@@ -320,7 +320,7 @@ public class WordUtils {
         /*列表标题栏*/
         if(hasTitle) {
             XWPFTableRow row = table.getRow(0);
-            WordUtils.setRepeatHeaderRow(row);
+            DocxUtils.setRepeatHeaderRow(row);
 
             for (int i = 0; i < colNum; i++) {
                 XWPFTableCell cell = row.getCell(i);
@@ -335,8 +335,8 @@ public class WordUtils {
                 if(render != null) {
                     render.accept(cell, config.getTitle());
                 } else {    //没有设定的情况下，用默认样式渲染
-                    XWPFParagraph paragraph = WordUtils.getParagraph(cell);
-                    WordUtils.addText(
+                    XWPFParagraph paragraph = DocxUtils.getParagraph(cell);
+                    DocxUtils.addText(
                             paragraph,
                             config.getTitle(),
                             style.fontFamily(),
@@ -357,12 +357,12 @@ public class WordUtils {
                     onCreateCell.accept(cell, config);
                 }
                 if(config.getAlign() != STJc.CENTER) {  //默认居中
-                    WordUtils.alignH(cell, config.getAlign());
+                    DocxUtils.alignH(cell, config.getAlign());
                 }
                 BiFunction<T, String, String> getContent = config.getGetContent();
                 if(getContent != null) {    //直接取内容展示
                     String content = getContent.apply(item, config.getKey());
-                    WordUtils.addText(
+                    DocxUtils.addText(
                             cell,
                             content,
                             style.fontFamily(),
@@ -469,7 +469,7 @@ public class WordUtils {
      * @return XWPFHeaderFooterPolicy
      */
     public static XWPFHeaderFooterPolicy header(XWPFDocument doc, Consumer<XWPFParagraph> consumer) {
-        CTSectPr sectPr = WordUtils.getPr(doc);
+        CTSectPr sectPr = DocxUtils.getPr(doc);
         XWPFHeaderFooterPolicy headerFooterPolicy = new XWPFHeaderFooterPolicy(doc, sectPr);
         XWPFHeader header =  headerFooterPolicy.createHeader(STHdrFtr.DEFAULT);
         XWPFParagraph paragraph = header.createParagraph();

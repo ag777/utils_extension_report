@@ -34,7 +34,7 @@ import java.util.function.BiConsumer;
  * @author ag777
  * @version create on 2020年09月30日,last modify at 2020年09月30日
  */
-public class WordBuilder {
+public class DocxBuilder {
 
     private XWPFDocument doc;
     private WordStyleInterf style;
@@ -45,7 +45,7 @@ public class WordBuilder {
     private int sectionNum; //第二级标题序号
 
 
-    public WordBuilder(WordStyleInterf wordStyleInterf) {
+    public DocxBuilder(WordStyleInterf wordStyleInterf) {
         this.style = wordStyleInterf;
         init();
     }
@@ -64,7 +64,7 @@ public class WordBuilder {
     }
 
     private void init() {
-        doc = WordUtils.newDoc(
+        doc = DocxUtils.newDoc(
                 style.fontFamily(),
                 style.pageWidth(), style.pageHeight(),
                 style.pageMarginTop(), style.pageMarginLeft(), style.pageMarginBottom(), style.pageMarginRight());
@@ -73,13 +73,13 @@ public class WordBuilder {
         newPage=true;
     }
 
-    public WordBuilder newPage() {
-        WordUtils.newPage(doc);
+    public DocxBuilder newPage() {
+        DocxUtils.newPage(doc);
         newPage = true;
         return this;
     }
 
-    public WordBuilder title1(String title) {
+    public DocxBuilder title1(String title) {
         chapterNum++;
         sectionNum=0;
         if(chapterNum>1 && !newPage) {
@@ -90,39 +90,39 @@ public class WordBuilder {
         return this;
     }
 
-    public WordBuilder title2(String title) {
+    public DocxBuilder title2(String title) {
         sectionNum++;
         addTitle(chapterNum+"."+sectionNum+"、"+title, 2, 10,true, true);
 //        emptyLine(1, 12);
         return this;
     }
 
-    public WordBuilder text(String text, int fontSize, String rgbStr, boolean alignCenter, boolean isBold, boolean isItalic) {
+    public DocxBuilder text(String text, int fontSize, String rgbStr, boolean alignCenter, boolean isBold, boolean isItalic) {
         addText(text, fontSize, rgbStr, alignCenter, isBold, isItalic);
         return this;
     }
 
-    public WordBuilder emptyLine(int lineCount, int fontSize) {
+    public DocxBuilder emptyLine(int lineCount, int fontSize) {
         addEmptyLine(lineCount, fontSize);
         return this;
     }
 
-    public WordBuilder emptyLine(int lineCount) {
+    public DocxBuilder emptyLine(int lineCount) {
         addEmptyLine(lineCount);
         return this;
     }
 
-    public <T>WordBuilder table(List<T> dataList, List<TableItemConfig<T>> configList, boolean hasTitle) {
+    public <T> DocxBuilder table(List<T> dataList, List<TableItemConfig<T>> configList, boolean hasTitle) {
         addTable(dataList, configList, hasTitle);
         return this;
     }
 
-    public <T>WordBuilder vTable(Map<String, T> dataMap, int[] widths, TriConsumer<XWPFTableCell, T, String> contentRender, BiConsumer<XWPFTableCell, String> titleRender) {
+    public <T> DocxBuilder vTable(Map<String, T> dataMap, int[] widths, TriConsumer<XWPFTableCell, T, String> contentRender, BiConsumer<XWPFTableCell, String> titleRender) {
         addVTable(dataMap, widths, contentRender, titleRender);
         return this;
     }
 
-    public WordBuilder img(File imgFile, Integer width, Integer height) {
+    public DocxBuilder img(File imgFile, Integer width, Integer height) {
         try {
             imgWithException(imgFile, width, height);
         } catch (Throwable ignored) {
@@ -130,7 +130,7 @@ public class WordBuilder {
         return this;
     }
 
-    public WordBuilder imgWithException(File imgFile, Integer width, Integer height) throws InvalidFormatException, IOException, ImageNotSupportException {
+    public DocxBuilder imgWithException(File imgFile, Integer width, Integer height) throws InvalidFormatException, IOException, ImageNotSupportException {
         addImg(imgFile, width, height);
         return this;
     }
@@ -142,8 +142,8 @@ public class WordBuilder {
      * @param rgbStr 字体颜色(16进制)
      * @return 页眉引用
      */
-    public WordBuilder header(String text, int fontSize, String rgbStr) {
-        WordUtils.header(doc,
+    public DocxBuilder header(String text, int fontSize, String rgbStr) {
+        DocxUtils.header(doc,
                 text,
                 style.fontFamily(), fontSize, rgbStr);
         return this;
@@ -157,8 +157,8 @@ public class WordBuilder {
      * @param rgbStr 字体颜色(16进制)
      * @return 页脚引用
      */
-    public WordBuilder footer(String before, String after, int fontSize, String rgbStr) {
-        WordUtils.footer(doc,
+    public DocxBuilder footer(String before, String after, int fontSize, String rgbStr) {
+        DocxUtils.footer(doc,
                 before, after,
                 style.fontFamily(), fontSize, rgbStr);
         return this;
@@ -173,8 +173,8 @@ public class WordBuilder {
      * @param rotationAngle 旋转角度
      * @return
      */
-    public WordBuilder waterMark(String text, String colorHex, int width, int height, int rotationAngle) {
-       WordUtils.addWaterMark(doc, text, colorHex, width, height, rotationAngle);
+    public DocxBuilder waterMark(String text, String colorHex, int width, int height, int rotationAngle) {
+       DocxUtils.addWaterMark(doc, text, colorHex, width, height, rotationAngle);
        return this;
     }
 
@@ -184,7 +184,7 @@ public class WordBuilder {
     }
 
     public XWPFRun addText(XWPFParagraph paragraph, String text, int fontSize, String rgbStr, boolean alignCenter, boolean isBold, boolean isItalic) {
-        XWPFRun run = WordUtils.addText(paragraph, text, style.fontFamily(), fontSize, rgbStr);
+        XWPFRun run = DocxUtils.addText(paragraph, text, style.fontFamily(), fontSize, rgbStr);
         run.setBold(isBold);
         run.setItalic(isItalic);
         if(alignCenter) {
@@ -194,7 +194,7 @@ public class WordBuilder {
     }
 
     public XWPFRun addText(XWPFParagraph paragraph, String text, Integer size, String rgbStr) {
-        return WordUtils.addText(paragraph, text, style.fontFamily(), size, rgbStr, false);
+        return DocxUtils.addText(paragraph, text, style.fontFamily(), size, rgbStr, false);
     }
 
     public void addEmptyLine(int lineCount) {
@@ -210,13 +210,13 @@ public class WordBuilder {
         if(lineCount > 1) {
             content= StringUtils.stack("\r", lineCount-1);
         }
-        WordUtils.addText(paragraph, content, style.fontFamily(), fontSize, null, true);
+        DocxUtils.addText(paragraph, content, style.fontFamily(), fontSize, null, true);
     }
 
     public void addImg(File imgFile, Integer width, Integer height) throws InvalidFormatException, IOException, ImageNotSupportException {
         XWPFParagraph paragraph = newParagraph();
         paragraph.setAlignment(ParagraphAlignment.CENTER);
-        WordUtils.addImg(paragraph, imgFile, width, height);
+        DocxUtils.addImg(paragraph, imgFile, width, height);
     }
 
     private XWPFParagraph newParagraph() {
@@ -248,10 +248,10 @@ public class WordBuilder {
         int baseRow = hasTitle?1:0;
         XWPFTable table = addTable(rowNum+baseRow, colNum, style.tableWidth(), widths);
 
-        WordUtils.fillTable(table, dataList, configList, style, hasTitle, (cell, config)->{
+        DocxUtils.fillTable(table, dataList, configList, style, hasTitle, (cell, config)->{
             /** 设置水平垂直居中 */
-            WordUtils.alignHCenter(cell);
-            WordUtils.alignVCenter(cell);
+            DocxUtils.alignHCenter(cell);
+            DocxUtils.alignVCenter(cell);
         });
 
         return table;
@@ -290,16 +290,16 @@ public class WordBuilder {
 
 
     public XWPFTable addTable(int rowNum, int colNum, int tableWidth, int[] widths) {
-        XWPFTable table = WordUtils.newTable(doc, rowNum, colNum);
-        WordUtils.setBorder(table, XWPFTable.XWPFBorderType.SINGLE, 4, 0, "EFEFEF");
-        WordUtils.setTableWidths(table, style.tableWidth(), widths);
+        XWPFTable table = DocxUtils.newTable(doc, rowNum, colNum);
+        DocxUtils.setBorder(table, XWPFTable.XWPFBorderType.SINGLE, 4, 0, "EFEFEF");
+        DocxUtils.setTableWidths(table, style.tableWidth(), widths);
         return table;
     }
 
     private XWPFRun addTitle(String title, int level, int fontSize, boolean isBold, boolean isItalic) {
         XWPFParagraph paragraph = newParagraph();
         paragraph.setStyle("Heading"+level);
-        XWPFRun run = WordUtils.addText(paragraph, title, style.fontFamily(), fontSize, null);
+        XWPFRun run = DocxUtils.addText(paragraph, title, style.fontFamily(), fontSize, null);
         run.setBold(isBold);
         run.setItalic(isItalic);
         run.addBreak(BreakType.TEXT_WRAPPING);
@@ -309,8 +309,8 @@ public class WordBuilder {
     private XWPFTableCell getCell(XWPFTableRow row, int colNum) {
         XWPFTableCell cell = row.getCell(colNum);
         /** 设置水平垂直居中 */
-        WordUtils.alignHCenter(cell);
-        WordUtils.alignVCenter(cell);
+        DocxUtils.alignHCenter(cell);
+        DocxUtils.alignVCenter(cell);
         return cell;
     }
 
