@@ -32,17 +32,19 @@ import java.util.function.BiConsumer;
  * </ul>
  *
  * @author ag777
- * @version create on 2020年09月30日,last modify at 2020年09月30日
+ * @version create on 2020年09月30日,last modify at 2023年05月15日
  */
 public class DocxBuilder {
 
     private XWPFDocument doc;
-    private WordStyleInterf style;
+    private final WordStyleInterf style;
 
-    private boolean newPage;    //代表目前刚创建一个新页(这个是为了解决newPage方法每次执行都会在新页插入个空行，我们在写入数据时可以复用该空行解决问题)
-
-    private int chapterNum; //第一级标题序号
-    private int sectionNum; //第二级标题序号
+    /** 代表目前刚创建一个新页(这个是为了解决newPage方法每次执行都会在新页插入个空行，我们在写入数据时可以复用该空行解决问题) */
+    private boolean newPage;
+    /** 第一级标题序号 */
+    private int chapterNum;
+    /** 第二级标题序号 */
+    private int sectionNum;
 
 
     public DocxBuilder(WordStyleInterf wordStyleInterf) {
@@ -171,7 +173,7 @@ public class DocxBuilder {
      * @param width 水印宽度
      * @param height 水印高度
      * @param rotationAngle 旋转角度
-     * @return
+     * @return DocxBuilder
      */
     public DocxBuilder waterMark(String text, String colorHex, int width, int height, int rotationAngle) {
        DocxUtils.addWaterMark(doc, text, colorHex, width, height, rotationAngle);
@@ -249,7 +251,7 @@ public class DocxBuilder {
         XWPFTable table = addTable(rowNum+baseRow, colNum, style.tableWidth(), widths);
 
         DocxUtils.fillTable(table, dataList, configList, style, hasTitle, (cell, config)->{
-            /** 设置水平垂直居中 */
+            /* 设置水平垂直居中 */
             DocxUtils.alignHCenter(cell);
             DocxUtils.alignVCenter(cell);
         });
@@ -292,7 +294,7 @@ public class DocxBuilder {
     public XWPFTable addTable(int rowNum, int colNum, int tableWidth, int[] widths) {
         XWPFTable table = DocxUtils.newTable(doc, rowNum, colNum);
         DocxUtils.setBorder(table, XWPFTable.XWPFBorderType.SINGLE, 4, 0, "EFEFEF");
-        DocxUtils.setTableWidths(table, style.tableWidth(), widths);
+        DocxUtils.setTableWidths(table, tableWidth, widths);
         return table;
     }
 
@@ -308,7 +310,7 @@ public class DocxBuilder {
 
     private XWPFTableCell getCell(XWPFTableRow row, int colNum) {
         XWPFTableCell cell = row.getCell(colNum);
-        /** 设置水平垂直居中 */
+        /* 设置水平垂直居中 */
         DocxUtils.alignHCenter(cell);
         DocxUtils.alignVCenter(cell);
         return cell;

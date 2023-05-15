@@ -11,17 +11,22 @@ import java.util.function.BiFunction;
  * 表格项配置
  *
  * @author ag777
- * @version create on 2020年09月30日,last modify at 2020年09月30日
+ * @version create on 2020年09月30日,last modify at 2023年05月15日
  */
 public class TableItemConfig<T> {
     private String title;
     private String key;
     private int weight;
-    private STJc.Enum align;    //可选,水平对齐模式,默认为STJc.CENTER
-    private String colorHex;    //可选,16进制字体色值
-    private BiConsumer<XWPFTableCell, String> titleRender;  //渲染标题, (cell, 标题)
-    private BiFunction<T, String, String> getContent;   //直接获取文字自动渲染,(数据项, key, 展示内容)
-    private TriConsumer<XWPFTableCell, T, String> contentRender;    //完全自定义展示,(cell, 数据项, key) *getContent不设置时执行
+    /** 可选,水平对齐模式,默认为STJc.CENTER */
+    private STJc.Enum align;
+    /** 可选,16进制字体色值 */
+    private String colorHex;
+    /** 渲染标题, (cell, 标题) */
+    private BiConsumer<XWPFTableCell, String> titleRender;
+    /** 直接获取文字自动渲染,(数据项, key, 展示内容) */
+    private BiFunction<T, String, String> getContent;
+    /** 完全自定义展示,(cell, 数据项, key) *getContent不设置时执行 */
+    private TriConsumer<XWPFTableCell, T, String> contentRender;
 
     public TableItemConfig() {
         this.weight = 1;
@@ -38,7 +43,7 @@ public class TableItemConfig<T> {
         return title;
     }
 
-    public TableItemConfig setTitle(String title) {
+    public TableItemConfig<T> setTitle(String title) {
         this.title = title;
         return this;
     }
@@ -47,7 +52,7 @@ public class TableItemConfig<T> {
         return key;
     }
 
-    public TableItemConfig setKey(String key) {
+    public TableItemConfig<T> setKey(String key) {
         this.key = key;
         return this;
     }
@@ -56,7 +61,7 @@ public class TableItemConfig<T> {
         return weight;
     }
 
-    public TableItemConfig setWeight(int weight) {
+    public TableItemConfig<T> setWeight(int weight) {
         this.weight = weight;
         return this;
     }
@@ -65,7 +70,7 @@ public class TableItemConfig<T> {
         return align;
     }
 
-    public TableItemConfig setAlign(STJc.Enum align) {
+    public TableItemConfig<T> setAlign(STJc.Enum align) {
         this.align = align;
         return this;
     }
